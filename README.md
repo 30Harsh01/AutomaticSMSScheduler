@@ -1,5 +1,3 @@
-Below is a **single, complete, copy-paste-ready README.md file**. You can paste this directly into your GitHub repository.
-
 ---
 
 # Automatic SMS Scheduler
@@ -138,8 +136,6 @@ npm run dev
 This project is for learning and internal use. Licensing can be added as required.
 
 ---
-
-If you want, I can also:
 
 * Optimize this for a **portfolio project**
 * Add **API documentation**
