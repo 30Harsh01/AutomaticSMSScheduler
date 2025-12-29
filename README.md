@@ -136,9 +136,3 @@ npm run dev
 This project is for learning and internal use. Licensing can be added as required.
 
 ---
-
-* Optimize this for a **portfolio project**
-* Add **API documentation**
-* Shorten it for **GitHub repo description**
-
-Just tell me 👍
