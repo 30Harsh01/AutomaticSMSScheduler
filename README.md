@@ -1,117 +1,204 @@
 
 ---
 
-# Automatic SMS Scheduler
+# 📬 BulkSMSScheduler
 
-## 📌 Project Overview
+**BulkSMSScheduler** is a system to **schedule and send SMS & email campaigns** asynchronously.
 
-**Automatic SMS Scheduler** is a full-stack application designed to create, manage, and execute **SMS campaigns** in a scheduled and automated manner. The platform allows users to define SMS campaigns, control when they run, and manage recipient lists (shoppers) to whom messages are sent. The system uses **queue-based processing** to ensure reliable and scalable message delivery.
+* **Backend:** Node.js + Express + MongoDB + Redis + BullMQ
+* **Frontend:** React (Vite) + Tailwind CSS
 
----
-
-## 🚀 Key Features
-
-* Create and manage **SMS campaigns**
-* Schedule campaigns to run **on demand or at a specific time**
-* Add and manage **shoppers (recipients)** using email IDs
-* Asynchronous SMS processing using **Redis-based queues**
-* Secure authentication using **JWT**
-* Scalable and production-ready backend architecture
+> ⚠️ **Important:** Email sending behaves differently in **local development** and **production (Railway)**. See **Email Configuration**.
 
 ---
 
-## 🧠 Tech Stack
+## 🔹 Backend
 
-### Backend
+### Project Structure
 
-* Node.js (Express)
-* MongoDB
-* BullMQ (Redis)
-* JWT Authentication
-
-### Frontend
-
-* React (Vite)
-* Tailwind CSS
-
----
-
-## 🖥️ Backend Setup
-
-This service handles campaign creation, scheduling logic, queue processing, and data persistence.
-
-### How to Run the Backend
-
-1. Clone the repository and navigate to the backend directory
-   `cd datmanBackend`
-
-2. Install dependencies
-   `npm install`
-
-3. Create a `.env` file and configure environment variables
-
-   PORT=your_port
-   MONGOURI=your_mongodb_uri
-   REDIS_HOST=your_redis_host
-   REDIS_PORT=your_redis_port
-   REDIS_PASSWORD=your_redis_password
-   REDIS_HOST_URL=your_redis_host_url
-   JWT_SECRET=your_jwt_secret
-   MAIL=your_email
-   MAILPASS=your_email_password
-
-4. Start the backend server
-   `cd src && nodemon index.js`
-
-### Important Notes
-
-* Ensure the `.env` file is correctly configured
-* **Redis must be running** for queue-based campaign processing
+```
+src/
+├─ config/
+│  ├─ database.js
+│  └─ redis.js
+├─ controllers/
+│  ├─ billingController.js
+│  ├─ campaignController.js
+│  ├─ merchantController.js
+│  ├─ shopperController.js
+│  └─ smsRoutesController.js
+├─ middleware/
+│  └─ authMiddleware.js
+├─ models/
+│  ├─ billingSchema.js
+│  ├─ campaignSchema.js
+│  ├─ merchantSchema.js
+│  └─ shopperSchema.js
+├─ queue/
+│  └─ smsQueues.js
+├─ routes/
+│  ├─ billingRoutes.js
+│  ├─ campaignRoute.js
+│  ├─ merchantRoutes.js
+│  ├─ shopperRoutes.js
+│  └─ smsRoutes.js
+├─ utils/
+│  └─ smsSender.js
+└─ index.js
+.env
+package.json
+README.md
+```
 
 ---
 
-## 🖥️ Frontend Setup
+### Features
 
-The frontend provides an interface to create SMS campaigns, schedule executions, and manage shoppers.
-
-### How to Run the Frontend
-
-1. Navigate to the frontend directory
-   `cd datmanFrontend`
-
-2. Install dependencies
-   `npm install`
-
-3. Create a `.env` file and add the API base URL
-
-   VITE_API_BASE_URL=your_base_api_url
-
-4. Start the development server
-   `npm run dev`
+* Schedule SMS/email campaigns (immediate or future)
+* Charge merchants per recipient
+* Queue-based reliable processing using **BullMQ + Redis**
+* Retry and failure logging
+* Email sending via **Nodemailer (local)** and **Resend (production)**
+* JWT authentication & authorization
+* MongoDB stores campaigns, merchants, and recipients
 
 ---
 
-## 🔄 Application Flow
+### Environment Variables
 
-1. Create an SMS campaign
-2. Add shoppers (recipients) using email IDs
-3. Schedule the campaign or trigger it manually
-4. Jobs are queued using BullMQ
-5. SMS messages are processed and sent asynchronously
+#### Local (Nodemailer)
+
+```env
+PORT=3000
+MONGOURI=your_mongodb_connection_string
+REDIS_HOST=your_redis_host
+REDIS_PORT=your_redis_port
+REDIS_PASSWORD=your_redis_password
+JWT_SECRET=your_jwt_secret_key
+
+MAIL=your_gmail_address
+MAILPASS=your_gmail_app_password
+```
+
+> ✅ Works locally
+> ❌ Does NOT work on Railway (SMTP ports blocked)
+
+#### Deployment (Railway / Resend)
+
+```env
+PORT=3000
+MONGOURI=your_mongodb_connection_string
+REDIS_HOST=your_redis_host
+REDIS_PORT=your_redis_port
+REDIS_PASSWORD=your_redis_password
+JWT_SECRET=your_jwt_secret_key
+
+RESEND_API_KEY=re_xxxxxxxxxxxxxxxxx
+```
+
+> ✅ Works on Railway
+> ⚠️ Free tier can send emails only to logged-in email unless domain is verified
 
 ---
 
-## 📈 Future Improvements
+### Email Sending Strategy
 
-* Campaign analytics and delivery reports
-* Retry handling for failed SMS jobs
-* Role-based access control
-* Support for additional notification channels
+* **Local:** Nodemailer + Gmail SMTP (uncomment code in `smsSender.js`)
+* **Production:** Resend API (SMTP blocked, free tier limited)
+
+> To send emails to multiple recipients in production: verify a domain in Resend.
 
 ---
 
-## 📄 License
+### Notes
 
-This project is for learning and internal use. Licensing can be added as required.
+* Redis eviction policy must be `noeviction` for BullMQ stability
+* Avoid committing `.env` files
+* Free Resend tier is limited; verify a domain for production
+
+---
+
+## 🔹 Frontend
+
+### Project Structure
+
+```
+src/
+├─ components/
+├─ pages/
+└─ main.jsx
+public/
+.env
+package.json
+```
+
+---
+
+### Features
+
+* Connects to backend API
+* Displays campaigns and recipient management
+* Allows merchants to schedule SMS/email
+
+---
+
+### Environment Variables
+
+Create a `.env` file:
+
+```env
+VITE_API_BASE_URL=http://localhost:3000
+```
+
+> Replace with deployed backend URL for production
+
+---
+
+### Run Frontend
+
+```bash
+npm install
+npm run dev
+```
+
+Frontend runs at:
+
+```
+http://localhost:5173
+```
+
+---
+
+### Deployment (Netlify)
+
+1. Connect repository to Netlify
+2. Add environment variable:
+
+```
+Key:   VITE_API_BASE_URL
+Value: https://your-backend-domain
+```
+
+3. Redeploy site
+
+---
+
+### Resources
+
+* BullMQ — [https://docs.bullmq.io/](https://docs.bullmq.io/)
+* Redis — [https://redis.io/](https://redis.io/)
+* MongoDB — [https://www.mongodb.com/](https://www.mongodb.com/)
+* Resend — [https://resend.com](https://resend.com)
+* Nodemailer — [https://nodemailer.com/](https://nodemailer.com/)
+
+---
+
+### Contribution
+
+* Use Nodemailer locally
+* Use Resend or any email API in production
+* Replace the email layer entirely if needed
+
+Open issues or submit pull requests 🚀
 
 ---
