@@ -3,6 +3,8 @@
 
 # 📬 BulkSMSScheduler
 
+**Hosted Link:** https://bulksmsscheduler.netlify.app/login
+
 **BulkSMSScheduler** is a system to **schedule and send SMS & email campaigns** asynchronously.
 
 * **Backend:** Node.js + Express + MongoDB + Redis + BullMQ
