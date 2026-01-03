@@ -7,9 +7,7 @@ import initQueue from '../queue/smsQueues.js'; // lazy init of BullMQ queue
 // Helper to get the queue instance
 let smsQueueInstance;
 const getSMSQueue = async () => {
-    console.log("Isnide here")
   if (!smsQueueInstance) {
-    console.log("Checking this")
     smsQueueInstance = await initQueue();
   }
   return smsQueueInstance;
@@ -58,7 +56,6 @@ export const confirmAndSendSMS = async (req, res) => {
 
   try {
     const campaignId = req.params.id;
-    console.log("Checking here");
 
     if (!mongoose.Types.ObjectId.isValid(campaignId))
       return res.status(400).json({ message: 'Invalid campaign ID format' });
@@ -80,6 +77,7 @@ export const confirmAndSendSMS = async (req, res) => {
       return res.status(400).json({ message: 'No recipients found for this campaign' });
 
     console.log(`Confirmed SMS job for campaign: ${campaignId}, total recipients: ${recipients.length}`);
+    campaign.totalCount = recipients.length;
 
     const recipientPhones = recipients.map(r => r.phone);
 
@@ -96,9 +94,7 @@ export const confirmAndSendSMS = async (req, res) => {
       return res.status(400).json({ message: 'Insufficient balance. Please add credits.' });
     }
 
-    console.log("HERE");
     const smsQueue = await getSMSQueue();
-    console.log("AFTER");
 
     if (scheduledAt) {
       const delay = new Date(scheduledAt).getTime() - Date.now();

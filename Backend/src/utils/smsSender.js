@@ -7,8 +7,6 @@
 // // Function to send emails
 // const sendSMS = async (email, subject, message) => {
 
-//     console.log("process.env.MAIL",process.env.MAIL)
-//     console.log("process.env.MAILPASS",process.env.MAILPASS)
 //     const mailOptions = {
 //         from: "harshsrms30@gmail.com",
 //         to: email,

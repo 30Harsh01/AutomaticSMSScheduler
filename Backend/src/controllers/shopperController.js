@@ -6,7 +6,6 @@ import Shopper from '../models/shopperSchema.js';
 export const addShopper = async (req, res) => {
     try {
         const { phone } = req.body;
-        // console.log("merchantID",merchantId)
         const merchantId=req.user._id
         let shopper = await Shopper.findOne({ phone });
 

@@ -33,30 +33,6 @@ const useBilling = () => {
     }
   };
 
-  // const processPayment = async (merchantId, amount) => {
-  //   try {
-  //     const response = await fetch(`${API_BASE_URL}/api/billing/payment`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': authToken,
-  //       },
-  //       body: JSON.stringify({ merchantId, amount }),
-  //     });
-
-  //     const data = await response.json();
-  //     console.log("Payment response:", data);
-
-  //     if (response.ok) {
-  //       toast.success(data.message || 'Payment successful');
-  //     } else {
-  //       toast.error(data.message || 'Payment failed');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error processing payment:', error);
-  //     toast.error(error.message || 'Error processing payment');
-  //   }
-  // };
   const processPayment = async (amount) => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/billing/payment`, {
